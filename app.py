@@ -18,7 +18,7 @@ if "items" not in st.session_state:
 st.title("📝 할 일 + 코인 게이미피케이션")
 
 # ----------------------------
-# 할 일 추가 (form 사용)
+# 할 일 추가 (form)
 # ----------------------------
 with st.form("add_todo_form"):
     new_todo = st.text_input("할 일을 입력하세요:", key="new_todo")
@@ -28,11 +28,12 @@ if submit_todo:
     if new_todo.strip() != "":
         st.session_state.todos.append({"task": new_todo, "done": False})
         st.success(f"'{new_todo}' 추가됨!")
+        st.session_state.new_todo = ""  # 입력창 비우기
     else:
         st.error("빈 칸은 추가할 수 없어요!")
 
 # ----------------------------
-# 할 일 목록
+# 할 일 목록 (완료 시 삭제)
 # ----------------------------
 st.subheader("📋 할 일 목록")
 
@@ -40,18 +41,17 @@ for idx, todo in enumerate(st.session_state.todos):
     col1, col2 = st.columns([4, 1])
 
     with col1:
-        status = "✅" if todo["done"] else "❌"
-        st.write(f"{status} {todo['task']}")
+        st.write(f"❌ {todo['task']}")
 
     with col2:
-        if not todo["done"]:
-            if st.button("완료!", key=f"done_{idx}"):
-                st.session_state.todos[idx]["done"] = True
-                st.session_state.coins += 10
-                st.success(f"코인 +10! 현재 코인: {st.session_state.coins}")
+        if st.button("완료!", key=f"done_{idx}"):
+            st.session_state.todos.pop(idx)  # 완료한 항목 제거
+            st.session_state.coins += 10
+            st.success(f"코인 +10! 현재 코인: {st.session_state.coins}")
+            st.experimental_rerun()  # 즉시 화면 갱신
 
 # ----------------------------
-# 코인
+# 코인 현황
 # ----------------------------
 st.subheader(f"💰 현재 코인: {st.session_state.coins}")
 
