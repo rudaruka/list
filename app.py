@@ -1,7 +1,7 @@
 import streamlit as st
 
 # ----------------------------
-# 세션 상태 초기화 (안전)
+# 세션 상태 초기화
 # ----------------------------
 if "todos" not in st.session_state:
     st.session_state.todos = []
@@ -9,7 +9,7 @@ if "todos" not in st.session_state:
 if "coins" not in st.session_state:
     st.session_state.coins = 0
 
-if "items" not in st.session_state or not isinstance(st.session_state.items, list):
+if "items" not in st.session_state:
     st.session_state.items = []
 
 # ----------------------------
@@ -18,14 +18,18 @@ if "items" not in st.session_state or not isinstance(st.session_state.items, lis
 st.title("📝 할 일 + 코인 게이미피케이션")
 
 # ----------------------------
-# 할 일 추가
+# 할 일 추가 (form 사용)
 # ----------------------------
-new_todo = st.text_input("할 일을 입력하세요:", key="new_todo")
-if st.button("추가", key="add_task"):
-    if new_todo:
+with st.form("add_todo_form"):
+    new_todo = st.text_input("할 일을 입력하세요:", key="new_todo")
+    submit_todo = st.form_submit_button("추가")
+
+if submit_todo:
+    if new_todo.strip() != "":
         st.session_state.todos.append({"task": new_todo, "done": False})
         st.success(f"'{new_todo}' 추가됨!")
-        st.session_state.new_todo = ""  # 입력창 비우기
+    else:
+        st.error("빈 칸은 추가할 수 없어요!")
 
 # ----------------------------
 # 할 일 목록
@@ -47,7 +51,7 @@ for idx, todo in enumerate(st.session_state.todos):
                 st.success(f"코인 +10! 현재 코인: {st.session_state.coins}")
 
 # ----------------------------
-# 코인 현황
+# 코인
 # ----------------------------
 st.subheader(f"💰 현재 코인: {st.session_state.coins}")
 
