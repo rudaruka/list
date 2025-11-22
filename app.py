@@ -13,12 +13,12 @@ if "items" not in st.session_state:
     st.session_state.items = []
 
 # ----------------------------
-# 제목
+# 앱 제목
 # ----------------------------
 st.title("📝 할 일 + 코인 게이미피케이션")
 
 # ----------------------------
-# 할 일 추가 (form)
+# 할 일 추가 (Form 사용)
 # ----------------------------
 with st.form("add_todo_form"):
     new_todo = st.text_input("할 일을 입력하세요:", key="new_todo")
@@ -28,14 +28,17 @@ if submit_todo:
     if new_todo.strip() != "":
         st.session_state.todos.append({"task": new_todo, "done": False})
         st.success(f"'{new_todo}' 추가됨!")
-        st.session_state.new_todo = ""  # 입력창 비우기
+        st.session_state.new_todo = ""  # 입력창 초기화
     else:
         st.error("빈 칸은 추가할 수 없어요!")
 
 # ----------------------------
-# 할 일 목록 (완료 시 삭제)
+# 할 일 목록 (완료 시 제거)
 # ----------------------------
 st.subheader("📋 할 일 목록")
+
+# 완료된 항목 index 모아두기
+todos_to_remove = []
 
 for idx, todo in enumerate(st.session_state.todos):
     col1, col2 = st.columns([4, 1])
@@ -45,10 +48,13 @@ for idx, todo in enumerate(st.session_state.todos):
 
     with col2:
         if st.button("완료!", key=f"done_{idx}"):
-            st.session_state.todos.pop(idx)  # 완료한 항목 제거
             st.session_state.coins += 10
             st.success(f"코인 +10! 현재 코인: {st.session_state.coins}")
-            st.experimental_rerun()  # 즉시 화면 갱신
+            todos_to_remove.append(idx)
+
+# 완료된 항목 안전하게 제거 (뒤에서부터)
+for idx in sorted(todos_to_remove, reverse=True):
+    st.session_state.todos.pop(idx)
 
 # ----------------------------
 # 코인 현황
