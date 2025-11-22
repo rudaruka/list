@@ -20,11 +20,12 @@ st.title("📝 할 일 + 코인 게이미피케이션")
 # ----------------------------
 # 할 일 추가
 # ----------------------------
-new_todo = st.text_input("할 일을 입력하세요:")
+new_todo = st.text_input("할 일을 입력하세요:", key="new_todo")
 if st.button("추가", key="add_task"):
     if new_todo:
         st.session_state.todos.append({"task": new_todo, "done": False})
         st.success(f"'{new_todo}' 추가됨!")
+        st.session_state.new_todo = ""  # 입력창 비우기
 
 # ----------------------------
 # 할 일 목록
