@@ -15,20 +15,7 @@ if "coins" not in st.session_state or not isinstance(st.session_state.coins, int
 if "items" not in st.session_state:
     st.session_state.items = []
 
-# ----------------------------
-# 배경 적용
-# ----------------------------
-if "배경 테마 🌄" in st.session_state.items:
-    st.markdown(
-        """
-        <style>
-        .stApp {
-            background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+
 
 # ----------------------------
 # 앱 제목
